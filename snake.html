@@ -15,14 +15,14 @@
 	var canv = document.getElementById('canv'),
 	    canv1 = canv.getContext("2d"),
 	    freeBlock = {x:500,y:60},
-	    interval;
+	    interval,
+	    startTime;
 	canv1.fillRect(0,0,600,600);
 	canv1.fillStyle = "gray";
 	canv1.fillRect(0,600,600,200);
     canv1.strokeStyle = "black";
     canv1.font = "italic 30pt Arial";
-    canv1.fillText("Fill text", 20, 50);
-    canv1.font = 'bold 30px sans-serif';
+   	canv1.font = 'bold 30px sans-serif';
     
 
 	
@@ -48,13 +48,15 @@
 		drawBlock(freeBlock);
 		var score = "Score: " + (snake1.blocks.length-5);
 		var speed = "Speed: " + snake1.speed;
+		var time = "Time: " + Math.round(((new Date() - startTime))/1000);
 		canv1.strokeText(score  , 10, 650);
 		canv1.strokeText(speed  , 200, 650);
+		canv1.strokeText(time  , 400, 650);
 	}
 	function Snake(){
 		this.moving = "right";
 		this.blocks = [{x:20,y:20},{x:20,y:40},{x:20,y:60},{x:20,y:80},{x:20,y:100}];
-		this.speed = 2;
+		this.speed = 1;
 		this.lastMove = "right";
 	}
 	Snake.prototype.draw = function(){
@@ -174,26 +176,23 @@
 	snake1.draw();	
 	snake1.move();
 	}
-	interval = setInterval(movingSnake,500/snake1.speed);
+	startTime  = new Date();
+	interval = setInterval(movingSnake,200/snake1.speed);
 	
 	window.onkeydown = keyPress;
 	function keyPress(event){
 		console.log("pressed");
 		if(event.keyCode == 39){
 			snake1.moving ="right";
-			console.log("right")
 		}
 		else if(event.keyCode == 40){
 			snake1.moving ="down";
-			console.log("down")
 		}
 		else if(event.keyCode == 38){
 			snake1.moving = "up";
-			console.log("down")
 		}
 		else if(event.keyCode == 37){
 			snake1.moving ="left";
-			console.log("left")
 		}
 	}
 	
