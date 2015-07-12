@@ -1,0 +1,188 @@
+<html>
+<head>
+	<title></title>
+	<style type="text/css">
+		
+	</style>
+</head>
+<body>
+	<canvas id="canv" height="600px" width="600px">
+		
+	</canvas>
+
+
+<script type="text/javascript">
+	var canv = document.getElementById('canv'),
+	    canv1 = canv.getContext("2d"),
+	    freeBlock = {x:500,y:60},
+	    interval;
+	canv1.fillRect(0,0,600,600);
+	
+	function generateRandomBlock(){
+		freeBlock.x = Math.round(Math.random()*29)*20;
+		freeBlock.y = Math.round(Math.random()*29)*20;
+		console.log(freeBlock.x);
+		console.log(freeBlock.y);
+	}
+	function drawBlock(blockObj){
+			var x = blockObj.x,
+				y = blockObj.y;
+			canv1.fillStyle = "white";
+			canv1.fillRect(x,y,20,20);
+			canv1.fillStyle = "gray";
+			canv1.fillRect(x+5,y+5,10,10);	
+		}
+	function resetCanvas(){
+		canv1.fillStyle = "black";
+		canv1.fillRect(0,0,600,600);
+		drawBlock(freeBlock);
+	}
+	function Snake(){
+		this.moving = "right";
+		this.blocks = [{x:20,y:20},{x:20,y:40},{x:20,y:60},{x:20,y:80},{x:20,y:100},{x:20,y:120}];
+		this.speed = 2;
+		this.lastMove = "right";
+	}
+	Snake.prototype.draw = function(){
+		
+		for(var length = this.blocks.length,i =0;i<length;i++ ){
+			var block = this.blocks[i];
+			drawBlock(block);
+		}
+	}
+	Snake.prototype.checkCollapse = function(block){
+
+		for(var i = 0,length = this.blocks.length;i<length;i++){
+			var snakeBlock = this.blocks[i];
+			
+			if(snakeBlock.x===block.x && snakeBlock.y === block.y){
+				alert("GAME OVER!!!")
+				clearInterval(interval);
+			}
+		}
+		this.lastMove = this.moving;
+		if(block.x===freeBlock.x && block.y===freeBlock.y){
+			this.blocks.push(freeBlock);
+			freeBlock ={};
+			generateRandomBlock();
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	Snake.prototype.move = function(){
+		var lastBlock = this.blocks[this.blocks.length-1],
+				beforeLast = this.blocks[this.blocks.length-2],
+				last = {};
+		
+		if(this.moving === "right"){
+			last.x =lastBlock.x +20;
+			last.y = lastBlock.y;
+			if(last.x>580){
+					last.x = 0;
+				}
+			if(last.x===beforeLast.x){
+				this.moving = this.lastMove;
+				this.move();
+				return;
+			}
+			if(this.checkCollapse(last)){
+				return;
+			}
+			
+		}	
+			if(this.moving === "down"){
+				last.x =lastBlock.x ;
+				last.y = lastBlock.y+20;
+				if(last.y>580){
+					last.y = 0;
+				}
+				if(last.y===beforeLast.y){
+					this.moving = this.lastMove;
+					this.move();
+					return;
+				}
+				if(this.checkCollapse(last)){
+					return;
+				}
+				
+			}
+		if(this.moving === "up"){
+			last.x =lastBlock.x ;
+			last.y = lastBlock.y-20;
+			if(last.y<0){
+					last.y = 580;
+				}
+			if(last.y===beforeLast.y){
+				this.moving = this.lastMove;
+				this.move();
+				return;
+			}
+			if(this.checkCollapse(last)){
+				return;
+			}
+			
+		}	
+		if(this.moving === "left"){
+			last.x =lastBlock.x-20 ;
+			last.y = lastBlock.y;
+			if(last.x<0){
+					last.x = 580;
+				}
+			if(last.x===beforeLast.x){
+				this.moving = this.lastMove;
+				this.move();
+					return;
+			}
+			if(this.checkCollapse(last)){
+				return;
+			}
+			
+		}			
+		for(var i = this.blocks.length-1;i>=0;i--){
+				var block = this.blocks[i];
+				var newLast = {};
+				newLast.x = block.x;
+				newLast.y = block.y;
+				block.x = last.x;
+				block.y = last.y;
+				last = newLast;
+				
+			}	
+
+
+		
+	}
+	var snake1 = new Snake();
+	function movingSnake(){
+	resetCanvas()
+	snake1.draw();	
+	snake1.move();
+	}
+	interval = setInterval(movingSnake,500/snake1.speed);
+	
+	window.onkeydown = keyPress;
+	function keyPress(event){
+		console.log("pressed");
+		if(event.keyCode == 39){
+			snake1.moving ="right";
+			console.log("right")
+		}
+		else if(event.keyCode == 40){
+			snake1.moving ="down";
+			console.log("down")
+		}
+		else if(event.keyCode == 38){
+			snake1.moving = "up";
+			console.log("down")
+		}
+		else if(event.keyCode == 37){
+			snake1.moving ="left";
+			console.log("left")
+		}
+	}
+	
+</script>
+</body>
+</html>
