@@ -48,10 +48,10 @@
 		drawBlock(freeBlock);
 		var score = "Score: " + (snake1.blocks.length-5);
 		var speed = "Speed: " + snake1.speed;
-		var time = "Time: " + Math.round(((new Date() - startTime))/1000);
+		var time = new Date(new Date() - startTime);
 		canv1.strokeText(score  , 10, 650);
 		canv1.strokeText(speed  , 200, 650);
-		canv1.strokeText(time  , 400, 650);
+		canv1.strokeText("Time: " +time.getMinutes() + ":" + time.getSeconds()  , 400, 650);
 	}
 	function Snake(){
 		this.moving = "right";
