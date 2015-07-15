@@ -23,9 +23,12 @@
     canv1.strokeStyle = "black";
     canv1.font = "italic 30pt Arial";
    	canv1.font = 'bold 30px sans-serif';
-    
-
-	
+    function gameOver(){
+		canv1.fillStyle = "black";
+		canv1.fillRect(0,0,600,600);
+		canv1.strokeStyle = "red";
+    	canv1.strokeText("GAME OVER" ,200,250);
+	}
 	function generateRandomBlock(){
 		freeBlock.x = Math.round(Math.random()*29)*20;
 		freeBlock.y = Math.round(Math.random()*29)*20;
@@ -52,6 +55,7 @@
 		canv1.strokeText(score  , 10, 650);
 		canv1.strokeText(speed  , 200, 650);
 		canv1.strokeText("Time: " +time.getMinutes() + ":" + time.getSeconds()  , 400, 650);
+		
 	}
 	function Snake(){
 		this.moving = "right";
@@ -59,6 +63,19 @@
 		this.speed = 1;
 		this.lastMove = "right";
 	}
+	Snake.prototype.changeSpeed = function(){
+		if(!this.lastSpeedChange){
+			snake1.lastSpeedChange = new Date;
+		}
+		var date = new Date()
+		if(date - snake1.lastSpeedChange >=30000){
+			snake1.lastSpeedChange = date;
+			snake1.speed++;
+			clearInterval(interval);
+			interval = setInterval(movingSnake,200/snake1.speed);
+		}
+	}
+
 	Snake.prototype.draw = function(){
 		
 		for(var length = this.blocks.length,i =0;i<length;i++ ){
@@ -72,7 +89,7 @@
 			var snakeBlock = this.blocks[i];
 			
 			if(snakeBlock.x===block.x && snakeBlock.y === block.y){
-				alert("GAME OVER!!!")
+				gameOver()
 				clearInterval(interval);
 			}
 		}
@@ -88,6 +105,7 @@
 		}
 	}
 	Snake.prototype.move = function(){
+		this.changeSpeed();
 		var lastBlock = this.blocks[this.blocks.length-1],
 				beforeLast = this.blocks[this.blocks.length-2],
 				last = {};
@@ -175,10 +193,10 @@
 	resetCanvas()
 	snake1.draw();	
 	snake1.move();
+	
 	}
 	startTime  = new Date();
 	interval = setInterval(movingSnake,200/snake1.speed);
-	
 	window.onkeydown = keyPress;
 	function keyPress(event){
 		console.log("pressed");
